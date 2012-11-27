@@ -17,15 +17,12 @@
 package de.fhb.twitalyseclient.beans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.model.ListDataModel;
 import javax.inject.Named;
+import org.primefaces.model.LazyDataModel;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Tuple;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
@@ -39,25 +36,28 @@ public class WordCountBean implements Serializable {
 	private final static Logger LOGGER = Logger.getLogger(WordCountBean.class.getName());
 	
 	
-	private LazyWordDataModel wordList;
+	private LazyDataModel<WordBean> wordList;
 	private int numStati;
 	private int numWords;
 	private Jedis jedis;
 
 	public WordCountBean() {
-		jedis = new Jedis("ec2-46-137-137-253.eu-west-1.compute.amazonaws.com", 6379);
-		jedis.getClient().setTimeout(10);
+		LOGGER.setLevel(Level.ALL);
+		jedis = new Jedis("ec2-54-247-30-175.eu-west-1.compute.amazonaws.com", 6379);
+		jedis.getClient().setTimeout(9999);
+		wordList = new LazyWordDataModel(jedis);
+		wordList.setRowCount(Integer.valueOf("" + jedis.zcard("words")));
 	}
 	
 	private void getAllWordsFromRedis(){
-		wordList = new LazyWordDataModel(jedis);
+		
 		
 		
 //		PushContext context = PushContextFactory.getDefault().getPushContext();
 		
 	}
 
-	public LazyWordDataModel getWordList() {
+	public LazyDataModel<WordBean> getWordList() {
 		getAllWordsFromRedis();
 		return wordList;
 	}
@@ -70,6 +70,7 @@ public class WordCountBean implements Serializable {
 		try {
 			numStati = Integer.valueOf(jedis.get("#stati"));
 		} catch (JedisConnectionException e) {
+			LOGGER.log(Level.SEVERE, "JedisConnectionTimeout");
 		}
 		
 		return numStati;
@@ -83,6 +84,7 @@ public class WordCountBean implements Serializable {
 		try {
 			numWords = Integer.valueOf(jedis.get("#words_filtered"));
 		} catch (JedisConnectionException e) {
+			LOGGER.log(Level.SEVERE, "JedisConnectionTimeout");
 		}
 		
 		return numWords;
