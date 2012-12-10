@@ -1,6 +1,8 @@
 package de.fhb.twitalyseclient.beans;
 
 import com.sun.grizzly.tcp.Request;
+import com.sun.grizzly.websockets.DataFrame;
+import com.sun.grizzly.websockets.WebSocket;
 import de.fhb.twitalyseclient.connection.RedisConnection;
 import de.fhb.twitalyseclient.connection.WebSocketConnection;
 import java.util.concurrent.Executors;
@@ -25,42 +27,39 @@ import redis.clients.jedis.exceptions.JedisException;
  */
 @Singleton
 public class PushGlobalInformation extends WebSocketConnection {
+
 	private final static Logger LOGGER = Logger.getLogger(PushGlobalInformation.class.getName());
-	
 	private boolean active;
 	private ScheduledExecutorService executor;
 	private Jedis jedis;
-	
 	private int numStati;
 	private int numWords;
 
 	public PushGlobalInformation() {
 		jedis = new RedisConnection().getConnection();
-		run();
 	}
-	@PreDestroy
-	public void preDestroy(){
-		if (executor != null) {
-			executor.shutdown();
-		}
-	}
-	
+
 	@Override
 	public boolean isApplicationRequest(Request request) {
 		final String uri = request.requestURI().toString();
 		return uri.endsWith("/globalInfo");
 	}
-	
+
+	@Override
+	public void onConnect(WebSocket socket) {
+		super.onConnect(socket);
+		run();
+	}
+
 	private void run() {
-		if (!active) {
-			LOGGER.log(Level.INFO, "Initialize scheduled Task...");
+
+		if (!active && !getWebSockets().isEmpty()) {
 			executor = Executors.newSingleThreadScheduledExecutor();
 			executor.scheduleAtFixedRate(new Runnable() {
 				@Override
 				public void run() {
 					String globalInfoJson;
 					try {
-						LOGGER.log(Level.INFO, "Running scheduled Task...");
 						StringBuilder jsonBuilder = new StringBuilder("{");
 						try {
 							jsonBuilder.append("\"allStati\":")
@@ -80,15 +79,20 @@ public class PushGlobalInformation extends WebSocketConnection {
 					} catch (Exception e) {
 						LOGGER.log(Level.SEVERE, "Exception: {0}", e);
 					}
-					jedis.incr("#stati");
+
+					if (getWebSockets().isEmpty()) {
+						active = false;
+						executor.shutdownNow();
+					}
+//					jedis.incr("#stati");
 
 				}
 			}, 0, 1, TimeUnit.SECONDS);
 			active = true;
+
 		}
 	}
 
-	
 	private String escape(String orig) {
 		StringBuilder buffer = new StringBuilder(orig.length());
 
@@ -135,13 +139,14 @@ public class PushGlobalInformation extends WebSocketConnection {
 
 		return buffer.toString();
 	}
+
 	public int getNumStati() {
 		try {
 			numStati = Integer.valueOf(jedis.get("#stati"));
 		} catch (JedisException e) {
 			LOGGER.log(Level.SEVERE, "JedisException {0}", e);
 		}
-		
+
 		return numStati;
 	}
 
@@ -155,13 +160,14 @@ public class PushGlobalInformation extends WebSocketConnection {
 		} catch (JedisException e) {
 			LOGGER.log(Level.SEVERE, "JedisException {0}", e);
 		}
-		
+
 		return numWords;
 	}
 
 	public void setNumWords(int numWords) {
 		this.numWords = numWords;
 	}
+
 	public boolean isActive() {
 		return active;
 	}

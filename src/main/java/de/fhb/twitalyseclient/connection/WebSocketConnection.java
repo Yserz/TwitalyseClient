@@ -36,6 +36,7 @@ import redis.clients.jedis.exceptions.JedisException;
  * @author Michael Koppen
  */
 public abstract class WebSocketConnection extends WebSocketApplication {
+	
 	@Override
 	public WebSocket createWebSocket(ProtocolHandler protocolHandler, WebSocketListener... listeners) {
 		return new Socket(protocolHandler, listeners);
