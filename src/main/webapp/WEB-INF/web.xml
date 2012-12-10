@@ -15,11 +15,20 @@
     </servlet-mapping>
     <session-config>
         <session-timeout>
-            30
-        </session-timeout>
+			30
+		</session-timeout>
     </session-config>
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
-	
+    <servlet>
+        <description>WebSocketServlet</description>
+        <servlet-name>WebSocketServlet</servlet-name>
+        <servlet-class>de.fhb.twitalyseclient.websocket.servlet.WebSocketServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WebSocketServlet</servlet-name>
+        <url-pattern>/WebSocketServlet</url-pattern>
+    </servlet-mapping>
 </web-app>

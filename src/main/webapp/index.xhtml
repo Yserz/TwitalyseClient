@@ -11,6 +11,50 @@
 				<meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
 				<title>Twitalyse</title>
 			</f:facet>
+			<script type="text/javascript">
+				var ws;
+
+				$(document).ready(
+						function() {
+							var url = 'ws://' + window.location.host + '/websocket/WebSocketServlet/globalInfo';
+							ws = new WebSocket(url);
+							ws.onopen = function(event) {
+
+							}
+							ws.onmessage = function(event) {
+								var json = event.data;
+								var parsedJSON = eval('('+json+')');
+
+								globalInfoList.list.html('');
+
+
+								var markup = '<li class="ui-datalist-item ui-helper-clearfix">';
+								markup += '#Stati : <strong>' + parsedJSON.allStati + '</strong>';
+								markup += '</li>';
+								markup += '<li class="ui-datalist-item ui-helper-clearfix">';
+								markup += '#Words : <strong>' + parsedJSON.allWordsFilteredFound + '</strong>';
+								markup += '</li>';
+
+								globalInfoList.list.append(markup);
+
+//								var $textarea = $('#messages');
+//								$textarea.val($textarea.val() + event.data + "\n");
+//								$textarea.animate({
+//									scrollTop: $textarea.height()
+//								}, 1000);
+							}
+							ws.onclose = function(event) {
+
+							}
+
+						});
+
+//				function sendMessage() {
+//					var message = $('#username').val() + ":" + $('#message').val();
+//					ws.send(message);
+//					$('#message').val('');
+//				}
+			</script>
 		</h:head>
 
         <h:body>
@@ -18,33 +62,39 @@
             <p:layout fullPage="true">
 
                 <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
-                    <center><h3>Twitalyse</h3></center>
-					#Stati: <h:outputText value="#{wordCountBean.numStati}"></h:outputText>
-					#Words: <h:outputText value="#{wordCountBean.numWords}"></h:outputText>
-                </p:layoutUnit>
 
-                <p:layoutUnit position="south" size="60" closable="true" collapsible="true">
-                    <center>
+                    <center><h3>Twitalyse</h3></center>
+					<h:form>
+						<p:dataList widgetVar="globalInfoList" styleClass="ui-list"> 
+						</p:dataList> 
+						<!--<p:remoteCommand name="init" actionListener="#{pushGlobalInformation.run}" autoRun="true" global="false"/>-->
+					</h:form>
+					
+
+				</p:layoutUnit>
+
+				<p:layoutUnit position="south" size="60" closable="true" collapsible="true">
+					<center>
 						Twitalyse<br />
 						© Michael Koppen, Christoph Ott, Andy Klay, Daniel Schmidt
 					</center>
-                </p:layoutUnit>
+				</p:layoutUnit>
 
-                <p:layoutUnit position="west" size="250" header="Left" collapsible="true">
-                    <p:menu>
-                        <p:submenu label="Resources">
-                            <p:menuitem value="Demo" url="http://www.primefaces.org/showcase-labs/ui/home.jsf" />
-                            <p:menuitem value="Documentation" url="http://www.primefaces.org/documentation.html" />
-                            <p:menuitem value="Forum" url="http://forum.primefaces.org/" />
-                            <p:menuitem value="Themes" url="http://www.primefaces.org/themes.html" />
-                        </p:submenu>
+				<p:layoutUnit position="west" size="250" header="Left" collapsible="true">
+					<p:menu>
+						<p:submenu label="Resources">
+							<p:menuitem value="Demo" url="http://www.primefaces.org/showcase-labs/ui/home.jsf" />
+							<p:menuitem value="Documentation" url="http://www.primefaces.org/documentation.html" />
+							<p:menuitem value="Forum" url="http://forum.primefaces.org/" />
+							<p:menuitem value="Themes" url="http://www.primefaces.org/themes.html" />
+						</p:submenu>
 
-                    </p:menu>
-                </p:layoutUnit>
+					</p:menu>
+				</p:layoutUnit>
 
-                <p:layoutUnit position="center">
-					
-                    <h:form>
+				<p:layoutUnit position="center">
+
+					<h:form>
 
 						<p:dataTable value="#{wordCountBean.wordList}" 
 									 lazy="true"
@@ -69,12 +119,12 @@
 						</p:dataTable>
 
 					</h:form>
-                </p:layoutUnit>
+				</p:layoutUnit>
 
-            </p:layout>
+			</p:layout>
 
-        </h:body>
+		</h:body>
 
-    </f:view>
+	</f:view>
 </html>
 
