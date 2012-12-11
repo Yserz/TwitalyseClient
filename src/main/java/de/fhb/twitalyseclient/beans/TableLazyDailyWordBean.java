@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Michael Koppen
+ * Copyright (C) 2012 MacYser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,40 +20,49 @@ import de.fhb.twitalyseclient.connection.RedisConnection;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import org.primefaces.model.LazyDataModel;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisException;
 
 /**
- * 
  *
- * @author Michael Koppen <koppen@fh-brandenburg.de>
+ * @author MacYser
  */
 @Named
 @RequestScoped
-public class TableLazyWordBean implements Serializable {
-	private final static Logger LOGGER = Logger.getLogger(TableLazyWordBean.class.getName());
-	
+public class TableLazyDailyWordBean implements Serializable {
+
+	private final static Logger LOGGER = Logger.getLogger(TableLazyDailyWordBean.class.getName());
 	private LazyDataModel<WordBean> wordList;
 	private Jedis jedis;
 
-	public TableLazyWordBean() {
+	/**
+	 * Creates a new instance of TableLazyDailyWordBean
+	 */
+	public TableLazyDailyWordBean() {
 		jedis = new RedisConnection().getConnection();
-		
+
 	}
 
 	public LazyDataModel<WordBean> getWordList() {
-		String key = "coordswords";
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+		String key = (String)session.getAttribute("key");
+
 		int rowCount = 0;
 		try {
 			rowCount = Integer.valueOf("" + jedis.zcard(key));
 		} catch (JedisException e) {
 			LOGGER.log(Level.SEVERE, "JedisException: {0}", e);
 		}
-		
+
+		LOGGER.log(Level.INFO, key);
+		LOGGER.log(Level.INFO, "{0}", rowCount);
+
 		wordList = new LazyRedisWordDataModel(jedis, key, rowCount);
 		return wordList;
 	}

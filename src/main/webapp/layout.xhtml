@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:f="http://java.sun.com/jsf/core">
+
+	<f:view contentType="text/html">
+		<h:head>
+			<f:facet name="first">
+				<meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+				<meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+
+				<title><ui:insert name="title">Template</ui:insert></title>
+			</f:facet>
+			<!--<link href="./resources/css/default.css" rel="stylesheet" type="text/css" />-->
+			<!--<link href="./resources/css/cssLayout.css" rel="stylesheet" type="text/css" />-->
+			<script type="text/javascript">
+				var ws;
+
+				$(document).ready(
+						function() {
+							var url = 'ws://' + window.location.host + '/websocket/WebSocketServlet/globalInfo';
+							ws = new WebSocket(url);
+							ws.onopen = function(event) {
+
+							};
+							ws.onmessage = function(event) {
+								var json = event.data;
+								var parsedJSON = eval('(' + json + ')');
+
+								globalInfoList.list.html('');
+
+
+								var markup = '<li class="ui-datalist-item ui-helper-clearfix">';
+								markup += '#Stati : <strong>' + parsedJSON.allStati + '</strong>';
+								markup += '</li>';
+								markup += '<li class="ui-datalist-item ui-helper-clearfix">';
+								markup += '#Words : <strong>' + parsedJSON.allWordsFilteredFound + '</strong>';
+								markup += '</li>';
+
+								globalInfoList.list.append(markup);
+
+							};
+							ws.onclose = function(event) {
+
+							};
+
+						});
+			</script>
+
+		</h:head>
+		<h:body>
+			<p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="125" resizable="true" closable="true" collapsible="true">
+					<ui:insert name="top">
+						<ui:include src="top.xhtml" />
+					</ui:insert>
+				</p:layoutUnit>
+
+				<p:layoutUnit position="south" size="40" closable="true" collapsible="true">
+					<ui:insert name="footer">
+						<ui:include src="footer.xhtml" />
+					</ui:insert>
+				</p:layoutUnit>
+
+				<p:layoutUnit position="west" size="250" header="Menu" collapsible="true">
+					<ui:insert name="navi">
+						<ui:include src="navi.xhtml" />
+					</ui:insert>
+				</p:layoutUnit>
+
+				<p:layoutUnit position="center">
+					<ui:insert name="content">
+						<ui:include src="index.xhtml" />
+					</ui:insert>
+				</p:layoutUnit>
+			</p:layout>
+		</h:body>
+	</f:view>
+</html>

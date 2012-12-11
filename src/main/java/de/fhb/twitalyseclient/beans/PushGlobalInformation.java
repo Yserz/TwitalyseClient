@@ -1,7 +1,6 @@
 package de.fhb.twitalyseclient.beans;
 
 import com.sun.grizzly.tcp.Request;
-import com.sun.grizzly.websockets.DataFrame;
 import com.sun.grizzly.websockets.WebSocket;
 import de.fhb.twitalyseclient.connection.RedisConnection;
 import de.fhb.twitalyseclient.connection.WebSocketConnection;
@@ -10,7 +9,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisException;

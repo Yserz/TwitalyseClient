@@ -38,11 +38,9 @@ public class LazyRedisWordDataModel extends LazyRedisDataModel<WordBean> {
 	private final static Logger LOGGER = Logger.getLogger(LazyRedisWordDataModel.class.getName());
 	
 	
-	public LazyRedisWordDataModel(Jedis jedis) {
-		super(jedis, "words");
-		LOGGER.setLevel(Level.ALL);
-		LOGGER.log(Level.INFO, "LazyRedisWordDataModel init");
-		this.setRowCount(Integer.valueOf("" + jedis.zcard("words")));
+	public LazyRedisWordDataModel(Jedis jedis, String key, int rowCount) {
+		super(jedis, key);
+		this.setRowCount(rowCount);
 	}
 
 	@Override
