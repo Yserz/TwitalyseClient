@@ -48,14 +48,12 @@ public class NaviBean {
 
 	private MenuModel model;
 	private Jedis jedis;
-	private UIViewRoot uiviewroot;
 
 	/**
 	 * Creates a new instance of NaviBean
 	 */
 	public NaviBean() {
 		jedis = new RedisConnection().getConnection();
-		uiviewroot = new UIViewRoot();
 	}
 
 	@PreDestroy
