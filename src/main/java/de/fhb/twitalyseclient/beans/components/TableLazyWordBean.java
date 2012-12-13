@@ -14,8 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.fhb.twitalyseclient.beans;
+package de.fhb.twitalyseclient.beans.components;
 
+import de.fhb.twitalyseclient.beans.common.WordBean;
+import de.fhb.twitalyseclient.beans.common.LazyRedisDataModel;
+import de.fhb.twitalyseclient.beans.common.LazyRedisWordDataModel;
 import de.fhb.twitalyseclient.connection.RedisConnection;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -34,16 +37,16 @@ import redis.clients.jedis.exceptions.JedisException;
  */
 @Named
 @RequestScoped
-public class TableLazyDailyWordBean implements Serializable {
+public class TableLazyWordBean implements Serializable {
 
-	private final static Logger LOGGER = Logger.getLogger(TableLazyDailyWordBean.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(TableLazyWordBean.class.getName());
 	private LazyDataModel<WordBean> wordList;
 	private Jedis jedis;
 
 	/**
-	 * Creates a new instance of TableLazyDailyWordBean
+	 * Creates a new instance of TableLazyWordBean
 	 */
-	public TableLazyDailyWordBean() {
+	public TableLazyWordBean() {
 		jedis = new RedisConnection().getConnection();
 
 	}

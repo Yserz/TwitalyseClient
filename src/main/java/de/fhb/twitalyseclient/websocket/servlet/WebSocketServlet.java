@@ -4,7 +4,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import com.sun.grizzly.websockets.WebSocketEngine;
-import de.fhb.twitalyseclient.beans.PushGlobalInformation;
+import de.fhb.twitalyseclient.beans.components.PushGlobalInformation;
 import java.util.logging.Logger;
 
 /**

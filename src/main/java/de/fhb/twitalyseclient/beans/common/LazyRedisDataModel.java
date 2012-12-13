@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.fhb.twitalyseclient.beans;
+package de.fhb.twitalyseclient.beans.common;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +47,7 @@ public abstract class LazyRedisDataModel<T> extends LazyDataModel<T> {
 		Set<Tuple> words = null;
 		try {
 			LOGGER.log(Level.INFO, "START: {0}, END: {1}", new Object[]{first, first+(pageSize-1)});
-			words = jedis.zrangeWithScores(key, first, first+(pageSize-1));
+			words = jedis.zrevrangeWithScores(key, first, first+(pageSize-1));
 		} catch (JedisException e) {
 			LOGGER.log(Level.SEVERE, "JedisException{0}", e);
 		}

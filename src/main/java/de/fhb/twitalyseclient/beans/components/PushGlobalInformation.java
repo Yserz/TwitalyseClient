@@ -1,4 +1,4 @@
-package de.fhb.twitalyseclient.beans;
+package de.fhb.twitalyseclient.beans.components;
 
 import com.sun.grizzly.tcp.Request;
 import com.sun.grizzly.websockets.WebSocket;

@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.fhb.twitalyseclient.beans;
+package de.fhb.twitalyseclient.beans.common;
 
+import de.fhb.twitalyseclient.beans.components.NaviBean;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +44,7 @@ public class NaviActionListener implements ActionListener {
 		session.setAttribute("key", event.getComponent().getAttributes().get("key"));
 		
 		try {
-			fc.getExternalContext().redirect(request.getContextPath() + "/faces/daily.xhtml");
+			fc.getExternalContext().redirect(request.getContextPath() + "/faces/words.xhtml");
 		} catch (IOException ex) {
 			Logger.getLogger(NaviBean.class.getName()).log(Level.SEVERE, null, ex);
 		}

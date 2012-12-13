@@ -7,27 +7,7 @@
 				template="./layout.xhtml">
 
 	<ui:define name="content">
-		<h:form>
-			<p:dataTable value="#{tableLazyWordBean.wordList}" 
-						 lazy="true"
-						 var="wordBean"
-						 widgetVar="wordTable"
-						 rows="20"
-						 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
-						 rowsPerPageTemplate="10,20,50,100,1000"
-						 paginator="true" 
-						 emptyMessage="There are no Words"
-						 paginatorAlwaysVisible="false">
-
-				<p:column headerText="Word">
-					<h:outputText value="#{wordBean.word}"></h:outputText>
-				</p:column>
-				<p:column headerText="Count">
-					<h:outputText value="#{wordBean.count}"></h:outputText>
-				</p:column>
-			</p:dataTable>
-
-		</h:form>
+		Hallo
 	</ui:define>
 </ui:composition>
 

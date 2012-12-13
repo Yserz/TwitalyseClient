@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.fhb.twitalyseclient.beans;
+package de.fhb.twitalyseclient.beans.components;
 
+import de.fhb.twitalyseclient.beans.common.NaviActionListener;
 import de.fhb.twitalyseclient.connection.RedisConnection;
 import java.io.IOException;
 import java.util.Set;
@@ -61,42 +62,90 @@ public class NaviBean {
 		jedis.disconnect();
 	}
 
-	private Set<String> getAllKeys() {
+	private Set<String> getKeyOfDailyWords() {
+		return jedis.keys("words_*");
+	}
+	
+	private Set<String> getKeyOfDailyWordsInEnviroment() {
 		return jedis.keys("coordswords_*");
 	}
-
+	
 	private void buildMenuModel() {
 		model = new DefaultMenuModel();
+		
+		String key;
 
 		//Global submenu
-		Submenu submenu = new Submenu();
-		submenu.setLabel("All");
+		Submenu subAllStatistics = new Submenu();
+		subAllStatistics.setLabel("Global Statistics");
 
 		MenuItem item = new MenuItem();
+		
 		item.setValue("All Words");
-		item.setUrl("/");
-		submenu.getChildren().add(item);
+		key = "words";
+		item.setAjax(false);
+		item.getAttributes().put("key", key);
+		item.addActionListener(new NaviActionListener());
+		subAllStatistics.getChildren().add(item);
 
-		model.addSubmenu(submenu);
+		item = new MenuItem();
+		item.setValue("All Words in Enviroment");
+		key = "coordswords";
+		item.setAjax(false);
+		item.getAttributes().put("key", key);
+		item.addActionListener(new NaviActionListener());
+		subAllStatistics.getChildren().add(item);
+
+		item = new MenuItem();
+		item.setValue("All Languages");
+		key = "languages";
+		item.setAjax(false);
+		item.getAttributes().put("key", key);
+		item.addActionListener(new NaviActionListener());
+		subAllStatistics.getChildren().add(item);
+
+
+		item = new MenuItem();
+		item.setValue("All Sources");
+		key = "sources";
+		item.setAjax(false);
+		item.getAttributes().put("key", key);
+		item.addActionListener(new NaviActionListener());
+		subAllStatistics.getChildren().add(item);
+
+
+
+		model.addSubmenu(subAllStatistics);
 
 		//Daily submenu
-		submenu = new Submenu();
-		submenu.setLabel("Daily");
+		Submenu subDailyStatistics = new Submenu();
+		subDailyStatistics.setLabel("Daily Statistics");
 
 
 		String name;
-		for (String key : getAllKeys()) {
-			
-			name = "Words of "+key.split("_")[1]+"."+key.split("_")[2]+"."+key.split("_")[3];
+		
+		for (String keyDaily : getKeyOfDailyWords()) {
+
+			name = "All Words of " + keyDaily.split("_")[1] + "." + keyDaily.split("_")[2] + "." + keyDaily.split("_")[3];
 			item = new MenuItem();
 			item.setAjax(false);
 			item.setValue(name);
-			item.getAttributes().put("key", key);
+			item.getAttributes().put("key", keyDaily);
 			item.addActionListener(new NaviActionListener());
-			submenu.getChildren().add(item);
+			subDailyStatistics.getChildren().add(item);
 		}
+		for (String keyDaily : getKeyOfDailyWordsInEnviroment()) {
 
-		model.addSubmenu(submenu);
+			name = "All Words in Enviroment of " + keyDaily.split("_")[1] + "." + keyDaily.split("_")[2] + "." + keyDaily.split("_")[3];
+			item = new MenuItem();
+			item.setAjax(false);
+			item.setValue(name);
+			item.getAttributes().put("key", keyDaily);
+			item.addActionListener(new NaviActionListener());
+			subDailyStatistics.getChildren().add(item);
+		}
+		
+		model.addSubmenu(subDailyStatistics);
 	}
 
 	public MenuModel getModel() {
