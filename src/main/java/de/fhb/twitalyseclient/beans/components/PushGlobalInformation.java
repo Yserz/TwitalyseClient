@@ -30,8 +30,8 @@ public class PushGlobalInformation extends WebSocketConnection {
 	private boolean active;
 	private ScheduledExecutorService executor;
 	private Jedis jedis;
-	private int numStati;
-	private int numWords;
+	private Long numStati;
+	private Long numWords;
 
 	public PushGlobalInformation() {
 		jedis = new RedisConnection().getConnection();
@@ -138,9 +138,14 @@ public class PushGlobalInformation extends WebSocketConnection {
 		return buffer.toString();
 	}
 
-	public int getNumStati() {
+	public long getNumStati() {
 		try {
-			numStati = Integer.valueOf(jedis.get("#stati"));
+			String temp = jedis.get("#stati");
+			if (temp == null) {
+				numStati = 0l;
+			}else {
+				numStati = Long.valueOf(temp);
+			}
 		} catch (JedisException e) {
 			LOGGER.log(Level.SEVERE, "JedisException {0}", e);
 		}
@@ -148,13 +153,18 @@ public class PushGlobalInformation extends WebSocketConnection {
 		return numStati;
 	}
 
-	public void setNumStati(int numStati) {
+	public void setNumStati(Long numStati) {
 		this.numStati = numStati;
 	}
 
-	public int getNumWords() {
+	public long getNumWords() {
 		try {
-			numWords = Integer.valueOf(jedis.get("#words_filtered"));
+			String temp = jedis.get("#words_filtered");
+			if (temp == null) {
+				numWords = 0l;
+			}else {
+				numWords = Long.valueOf(temp);
+			}
 		} catch (JedisException e) {
 			LOGGER.log(Level.SEVERE, "JedisException {0}", e);
 		}
@@ -162,7 +172,7 @@ public class PushGlobalInformation extends WebSocketConnection {
 		return numWords;
 	}
 
-	public void setNumWords(int numWords) {
+	public void setNumWords(Long numWords) {
 		this.numWords = numWords;
 	}
 

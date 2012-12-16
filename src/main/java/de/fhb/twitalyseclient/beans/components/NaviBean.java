@@ -70,6 +70,10 @@ public class NaviBean {
 		return jedis.keys("coordswords_*");
 	}
 	
+	private Set<String> getKeyOfDailyHashtags() {
+		return jedis.keys("hashtags_*");
+	}
+	
 	private void buildMenuModel() {
 		model = new DefaultMenuModel();
 		
@@ -112,6 +116,14 @@ public class NaviBean {
 		item.getAttributes().put("key", key);
 		item.addActionListener(new NaviActionListener());
 		subAllStatistics.getChildren().add(item);
+		
+		item = new MenuItem();
+		item.setValue("All Hashtags");
+		key = "hashtags";
+		item.setAjax(false);
+		item.getAttributes().put("key", key);
+		item.addActionListener(new NaviActionListener());
+		subAllStatistics.getChildren().add(item);
 
 
 
@@ -137,6 +149,16 @@ public class NaviBean {
 		for (String keyDaily : getKeyOfDailyWordsInEnviroment()) {
 
 			name = "All Words in Enviroment of " + keyDaily.split("_")[1] + "." + keyDaily.split("_")[2] + "." + keyDaily.split("_")[3];
+			item = new MenuItem();
+			item.setAjax(false);
+			item.setValue(name);
+			item.getAttributes().put("key", keyDaily);
+			item.addActionListener(new NaviActionListener());
+			subDailyStatistics.getChildren().add(item);
+		}
+		for (String keyDaily : getKeyOfDailyHashtags()) {
+
+			name = "All Hashtags of " + keyDaily.split("_")[1] + "." + keyDaily.split("_")[2] + "." + keyDaily.split("_")[3];
 			item = new MenuItem();
 			item.setAjax(false);
 			item.setValue(name);
